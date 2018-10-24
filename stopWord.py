@@ -3,7 +3,7 @@ import glob
 import argparse
 import collections
 import re
-
+import time
 
 def fileWordCounter(filepath, number, stopwords):
     
@@ -12,13 +12,13 @@ def fileWordCounter(filepath, number, stopwords):
     if stopwords == None:
         for line in f.readlines():
             # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
-            line = re.findall(r"[a-z]+[0-9a-z]*", line.lower())
+            line = re.findall(r"\b[a-z]+[a-z0-9]*\b", line.lower())
             count.update(line)
     else:
         stop = (open(stopwords, "r").readline().lower()).split(' ')
         for line in f.readlines():
             # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
-            line = re.findall(r"[a-z]+[0-9a-z]*", line.lower())
+            line = re.findall(r"\b[a-z]+[a-z0-9]*\b", line.lower())
             count.update(line)
         for element in stop:
             del(count[element])
@@ -58,8 +58,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     if args.file:
+        time_start = time.time()
         count = fileWordCounter(args.file, args.number, args.stopwords)
+        time_end = time.time()
         print(count)
+        print(time_end - time_start)
         exit(0)
     
     if args.directory:

@@ -11,7 +11,7 @@ def fileWordCounter(filepath, number):
     count = collections.Counter("")
     for line in f.readlines():
         # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
-        line = re.findall(r"[a-z]+[0-9a-z]*", line.lower())
+        line = re.findall(r"\b[a-z]+[a-z0-9]*\b", line.lower())
         count.update(line)
     
     f.close()

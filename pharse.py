@@ -3,18 +3,40 @@ import glob
 import argparse
 import collections
 import re
+from time import time
 
+
+def comprise(line, pharse):
+    length = len(line) - pharse + 1
+    result = []
+    for i in range(length):
+        flag = True
+        temp = ''
+        for j in range(pharse):
+            # 这部分判断可以优化
+            if line[i + j][0] > 'z' or line[i + j][0] < 'a':
+                flag = False
+                break
+            temp = temp + line[i + j] + ' '
+        if flag:
+            result.append(temp.rstrip())
+    return result
+
+    
 
 def fileWordCounter(filepath, number, stopwords, pharse):
     
     f = open(filepath, "r")
     count = collections.Counter("")
-    strmatch = [r"[a-z]+[0-9a-z]* " for i in range(pharse)]
-    strmatch = ''.join(strmatch).rstrip()
+    # strmatch = [r"\b\w+" for i in range(pharse)]
+    # strmatch = ''.join(strmatch)
+    strmatch = r'\b[a-z]+[a-z0-9]*\b|[^\sa-z0-9]'
+    strmatch = re.compile(strmatch)
     if stopwords == None:
         for line in f.readlines():
             # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
             line = re.findall(strmatch, line.lower())
+            line = comprise(line, pharse)
             count.update(line)
     else:
         stop = (open(stopwords, "r").readline().lower()).split(' ')
@@ -63,8 +85,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     if args.file:
+        start_time = time()
         count = fileWordCounter(args.file, args.number, args.stopwords, args.pharse)
         print(count)
+        end_time = time()
+        print("total time is ",end_time - start_time)
         exit(0)
     
     if args.directory:
