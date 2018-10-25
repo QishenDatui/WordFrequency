@@ -30,7 +30,7 @@ def fileWordCounter(filepath, number, stopwords, pharse):
     count = collections.Counter("")
     # strmatch = [r"\b\w+" for i in range(pharse)]
     # strmatch = ''.join(strmatch)
-    strmatch = r'\b[a-z]+[a-z0-9]*\b|[^\sa-z0-9]'
+    strmatch = r'\b\w+\b|[^\s\w]'
     strmatch = re.compile(strmatch)
     if stopwords == None:
         for line in f.readlines():
