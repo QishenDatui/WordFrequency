@@ -86,11 +86,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     if args.directory and args.file and args.word:
-        directoryWordCounter(args.directory, args.number, args.stopwords)
+        directoryWordCounter(args.file, args.number, args.stopwords)
         exit(0)
     
     if args.directorys and args.file and args.word:
-        allDirectoryWordCounter(args.directorys, args.number, args.stopwords)
+        allDirectoryWordCounter(args.file, args.number, args.stopwords)
         exit(0)
 
     if args.file and args.word:

@@ -38,6 +38,9 @@
     <Compile Include="alphabet.py" />
     <Compile Include="pharse.py" />
     <Compile Include="stopWord.py" />
+    <Compile Include="unitTest\testPhrase.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="unitTest\testStopWord.py">
       <SubType>Code</SubType>
     </Compile>
