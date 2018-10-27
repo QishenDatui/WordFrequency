@@ -23,12 +23,14 @@
     <Content Include="stopword.txt" />
     <Content Include="test.txt" />
     <Content Include="test\6.Harry Potter and The Half-Blood Prince.txt" />
+    <Content Include="test\alphabet.txt" />
     <Content Include="test\Harry1.txt" />
     <Content Include="test\Harry2.txt" />
     <Content Include="test\Harry3.txt" />
     <Content Include="test\Harry4.txt" />
     <Content Include="test\Harry5.txt" />
     <Content Include="test\harrypotter5.txt" />
+    <Content Include="test\number.txt" />
     <Content Include="test\PrideAndPrejudice.txt" />
     <Content Include="verbs.txt" />
   </ItemGroup>
@@ -36,9 +38,16 @@
     <Compile Include="alphabet.py" />
     <Compile Include="pharse.py" />
     <Compile Include="stopWord.py" />
+    <Compile Include="unitTest\testWord.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="unitTest\testAlphabet.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="word.py" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="unitTest\" />
     <Folder Include="test" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
