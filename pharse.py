@@ -140,7 +140,6 @@ def allDirectoryWordCounter(directory, number, stopwords):
 
 
 if __name__ == "__main__":
-    args = parser.parse_args()
     parser = argparse.ArgumentParser()
     parser.add_argument("-x", "--stopwords", default=None, help="the path of the stopwords file")
     parser.add_argument("-n", "--number", type=int, default=-1, help="output number of the program")

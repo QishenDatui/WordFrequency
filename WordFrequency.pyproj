@@ -50,6 +50,8 @@
     <Compile Include="unitTest\testAlphabet.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="verbpreposition.py" />
+    <Compile Include="verbsphrase.py" />
     <Compile Include="word.py" />
   </ItemGroup>
   <ItemGroup>
