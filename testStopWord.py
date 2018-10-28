@@ -1,8 +1,7 @@
 import unittest
+from stopWord import fileWordCounter, alphabet
 
-from word import fileWordCounter, alphabet
-
-class TestWord(unittest.TestCase):
+class TestStopWord(unittest.TestCase):
     
     def setUp(self):
         return super().setUp()
@@ -30,15 +29,23 @@ class TestWord(unittest.TestCase):
 
     def test_word_init(self):
         filepath = "./test/word.txt"
-        count = fileWordCounter(filepath, 10)
+        count = fileWordCounter(filepath, 10, None)
         result = [('word', 100), ('hello', 70), ('a', 60), ('boy', 60), ('key', 50)]
         self.assertEqual(count, result)
 
     def test_word_noword(self):
         filepath = "./test/noword.txt"
-        count = fileWordCounter(filepath, -1)
+        count = fileWordCounter(filepath, -1, None)
         self.assertEqual(len(count), 0)
+
+    def test_stopWord_init(self):
+        filepath = "./test/word.txt"
+        stopWordpath = "./stopword.txt"
+        count = fileWordCounter(filepath, 10, stopWordpath)
+        result = [('word', 100), ('hello', 70), ('a', 60), ('key', 50)]
+        self.assertEqual(count, result)
 
 if __name__ == "__main__":
     unittest.main()
+
 
