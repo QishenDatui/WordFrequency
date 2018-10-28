@@ -6,7 +6,33 @@ import re
 from time import time
 
 
-def comprise(line, pharse):
+def comprise_morewords(line, pharse):
+    length = len(line) - pharse + 1
+    result = []
+    lens = [0] * pharse
+    i = 0
+    j = 0
+    temp = ''
+    while i < length:
+        while j < pharse:
+            if line[i + j][0] > 'z' or line[i + j][0] < 'a':
+                i = i + j
+                j = 0
+                temp=''
+                break
+            temp = temp + line[i + j] + ' '
+            lens[j] = len(line[i+j])
+            j = j + 1
+        if j==pharse:
+            j = pharse - 1
+            result.append(temp[:-1])
+            temp = temp[lens[0]+1:]
+            for k in range(pharse-1):
+                lens[k] = lens[k+1]
+        i = i + 1
+    return result 
+
+def comprise_3words(line, pharse):
     length = len(line) - pharse + 1
     result = []
     for i in range(length):
@@ -24,19 +50,22 @@ def comprise(line, pharse):
 
     
 
-def filePharseCounter(filepath, number, stopwords, pharse):
+def filePharseCounter_3words(filepath, number, stopwords, pharse):
     
     f = open(filepath, "r")
     count = collections.Counter("")
     # strmatch = [r"\b\w+" for i in range(pharse)]
     # strmatch = ''.join(strmatch)
-    strmatch = r'\b\w+\b|[^\s\w]'
+    strmatch = r'\b\w+\b|[^\s\w]+'
     strmatch = re.compile(strmatch)
+    # pynlpir.open()
     if stopwords == None:
         for line in f.readlines():
             # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
             line = re.findall(strmatch, line.lower())
-            line = comprise(line, pharse)
+            # line = WordSpilt().tokenize(line.lower())
+            # line = pynlpir.segment(line.lower(), pos_tagging=False)
+            line = comprise_3words(line, pharse)
             count.update(line)
     else:
         stopfile = open(stopwords, "r")
@@ -47,10 +76,48 @@ def filePharseCounter(filepath, number, stopwords, pharse):
             # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
             line = re.findall(strmatch, line.lower())
             line = [element for element in line if element not in stop]
-            line = comprise(line, pharse)
+            line = comprise_3words(line, pharse)
             count.update(line)
     
     f.close()
+    # pynlpir.close()
+
+    if number == -1:
+        return count.most_common()
+    
+    return count.most_common(number) 
+
+def filePharseCounter_morewords(filepath, number, stopwords, pharse):
+    
+    f = open(filepath, "r")
+    count = collections.Counter("")
+    # strmatch = [r"\b\w+" for i in range(pharse)]
+    # strmatch = ''.join(strmatch)
+    strmatch = r'\b\w+\b|[^\s\w]+'
+    strmatch = re.compile(strmatch)
+    # pynlpir.open()
+    if stopwords == None:
+        for line in f.readlines():
+            # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
+            line = re.findall(strmatch, line.lower())
+            # line = WordSpilt().tokenize(line.lower())
+            # line = pynlpir.segment(line.lower(), pos_tagging=False)
+            line = comprise_morewords(line, pharse)
+            count.update(line)
+    else:
+        stopfile = open(stopwords, "r")
+        stop = stopfile.readline().lower().split(' ')
+        stopfile.close()
+        stop = collections.Counter(stop)
+        for line in f.readlines():
+            # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
+            line = re.findall(strmatch, line.lower())
+            line = [element for element in line if element not in stop]
+            line = comprise_morewords(line, pharse)
+            count.update(line)
+    
+    f.close()
+    # pynlpir.close()
 
     if number == -1:
         return count.most_common()
@@ -58,18 +125,35 @@ def filePharseCounter(filepath, number, stopwords, pharse):
     return count.most_common(number) 
 
 
-def directoryPharseCounter(directory, number, stopwords, pharse):
+def directoryPharseCounter_3words(directory, number, stopwords, pharse):
     fileList = glob.glob(directory+'*.txt')
     for file in fileList:
-        count = fileWordCounter(file, number, stopwords, pharse)
+        count = fileWordCounter_3words(file, number, stopwords, pharse)
         print("the words in %s are" % file)
         print(count)
 
-def allDirectoryPharseCounter(directory, number, stopwords, pharse):
+
+def allDirectoryPharseCounter_3words(directory, number, stopwords, pharse):
     for maindir, _, fileList in os.walk(directory):
         for filename in fileList:
             if filename[-4:] == ".txt":
-                count = fileWordCounter(maindir.join('/'.join(filename)), number, stopwords, pharse)
+                count = fileWordCounter_3words(maindir + '/' + filename, number, stopwords, pharse)
+                print("%s has words:" % filename)
+                print(count)
+
+
+def directoryPharseCounter_morewords(directory, number, stopwords, pharse):
+    fileList = glob.glob(directory+'*.txt')
+    for file in fileList:
+        count = fileWordCounter_morewords(file, number, stopwords, pharse)
+        print("the words in %s are" % file)
+        print(count)
+
+def allDirectoryPharseCounter_morewords(directory, number, stopwords, pharse):
+    for maindir, _, fileList in os.walk(directory):
+        for filename in fileList:
+            if filename[-4:] == ".txt":
+                count = fileWordCounter_morewords(maindir + '/' + filename, number, stopwords, pharse)
                 print("%s has words:" % filename)
                 print(count)
 
@@ -134,23 +218,28 @@ def allDirectoryWordCounter(directory, number, stopwords):
     for maindir, _, fileList in os.walk(directory):
         for filename in fileList:
             if filename[-4:] == ".txt":
-                count = fileWordCounter(maindir.join('/'.join(filename)), number, stopwords)
+                count = fileWordCounter(maindir + '/' + filename, number, stopwords)
                 print("%s has words:" % filename)
                 print(count)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    
     parser.add_argument("-x", "--stopwords", default=None, help="the path of the stopwords file")
     parser.add_argument("-n", "--number", type=int, default=-1, help="output number of the program")
+
     group = parser.add_mutually_exclusive_group()
     group.add_argument("-c", "--character", help="count the number of character", action='count')
     group.add_argument("-f", "--word", help="count the number of word", action='count')
-    group.add_argument("-p", "--pharse", help="the length of phrase to be counted", type=int, nargs=1)
+    group.add_argument("-p", "--pharse", type=int, default = 2, help="the length of phrase to be counted")
+
     group_path = parser.add_mutually_exclusive_group()
     group_path.add_argument("-d", "--directory", help="directory of the file", action='count')
     group_path.add_argument("-s", "--directorys", help="directory of the file", action='count')
-    parser.add_argument("file", help="the path of the file")
+
+    parser.add_argument("file", default = "./test/harrypotter5.txt", help="the path of the file")
+    
     args = parser.parse_args()
         
     if args.directory and args.file and args.word:
@@ -174,18 +263,34 @@ if __name__ == "__main__":
         print(count)
         exit(0)
 
+    if args.directory and args.file and args.pharse < 4:
+        directoryPharseCounter_3words(args.file, args.number, args.stopwords, args.pharse)
+        exit(0)
+
+    if args.directorys and args.file and args.pharse < 4:
+        allDirectoryPharseCounter_3words(args.file, args.number, args.stopwords, args.pharse)
+        exit(0)
+
+    if args.file and args.pharse < 4:
+        start_time = time()
+        count = filePharseCounter_3words(args.file, args.number, args.stopwords, args.pharse)
+        end_time = time()
+        print("total time is ",end_time - start_time)
+        print(count)
+        exit(0)
+
     if args.directory and args.file and args.pharse:
-        directoryWordCounter(args.file, args.number, args.stopwords, args.pharse)
+        directoryPharseCounter_morewords(args.file, args.number, args.stopwords, args.pharse)
         exit(0)
 
     if args.directorys and args.file and args.pharse:
-        allDirectoryWordCounter(args.file, args.number, args.stopwords, args.pharse)
+        allDirectoryPharseCounter_morewords(args.file, args.number, args.stopwords, args.pharse)
         exit(0)
 
     if args.file and args.pharse:
         start_time = time()
-        count = fileWordCounter(args.file, args.number, args.stopwords, args.pharse)
-        print(count)
+        count = filePharseCounter_morewords(args.file, args.number, args.stopwords, args.pharse)
         end_time = time()
         print("total time is ",end_time - start_time)
+        print(count)
         exit(0)

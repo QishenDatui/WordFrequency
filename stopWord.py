@@ -66,7 +66,7 @@ def allDirectoryWordCounter(directory, number, stopwords):
     for maindir, _, fileList in os.walk(directory):
         for filename in fileList:
             if filename[-4:] == ".txt":
-                count = fileWordCounter(maindir.join('/'.join(filename)), number, stopwords)
+                count = fileWordCounter(maindir + '/' + filename, number, stopwords)
                 print("%s has words:" % filename)
                 print(count)
     

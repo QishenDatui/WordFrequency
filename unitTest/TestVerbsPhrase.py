@@ -1,7 +1,7 @@
 import unittest
-from pharse import fileWordCounter, alphabet, filePharseCounter_3words, filePharseCounter_morewords
+from verbsphrase import fileWordCounter, alphabet, filePharseCounter, fileVerbsWordCounter, fileVerbsPharseCounter
 
-class TestStopWord(unittest.TestCase):
+class TestVerbsPhrase(unittest.TestCase):
     
     def setUp(self):
         return super().setUp()
@@ -49,7 +49,7 @@ class TestStopWord(unittest.TestCase):
         filepath = "./test/phrase.txt"
         stopWordpath = None
         phrase = 2
-        count = filePharseCounter_3words(filepath, 10, stopWordpath, phrase)
+        count = filePharseCounter(filepath, 10, stopWordpath, phrase)
         result = [('hello world', 100), ('hello kit', 30), ('a a', 10), ('a key', 5)]
         self.assertEqual(count, result)
 
@@ -57,25 +57,50 @@ class TestStopWord(unittest.TestCase):
         filepath = "./test/phrase.txt"
         stopWordpath = "./stopword.txt"
         phrase = 2
-        count = filePharseCounter_3words(filepath, 10, stopWordpath, phrase)
+        count = filePharseCounter(filepath, 10, stopWordpath, phrase)
         result = [('hello world', 100), ('a a', 10), ('a key', 5)]
         self.assertEqual(count, result)
 
-    def test_pharse_more_init(self):
-        filepath = "./test/phrase.txt"
-        stopWordpath = None
-        phrase = 2
-        count = filePharseCounter_morewords(filepath, 10, stopWordpath, phrase)
-        result = [('hello world', 100), ('hello kit', 30), ('a a', 10), ('a key', 5)]
+    def test_verbsword_init(self):
+        filepath = "./test/verbsword.txt"
+        stopwordpath = None
+        verbs = "./verbs.txt"
+        count = fileVerbsWordCounter(filepath, 10, stopwordpath, verbs)
+        result = [('abase', 400), ('abate',400), ('the',50)]
         self.assertEqual(count, result)
 
-    def test_pharse_more_stop(self):
-        filepath = "./test/phrase.txt"
-        stopWordpath = "./stopword.txt"
-        phrase = 2
-        count = filePharseCounter_morewords(filepath, 10, stopWordpath, phrase)
-        result = [('hello world', 100), ('a a', 10), ('a key', 5)]
+    def test_verbsword_stop(self):
+        filepath = "./test/verbsword.txt"
+        stopwordpath = "./stopword.txt"
+        verbs = "./verbs.txt"
+        count = fileVerbsWordCounter(filepath, 10, stopwordpath, verbs)
+        result = [('abase', 400), ('abate',400)]
         self.assertEqual(count, result)
+
+    def test_verbsphrase_init(self):
+        filepath = "./test/verbsphrase.txt"
+        stopwordpath = None
+        verbs = "./verbs.txt"
+        phrase = 2
+        count = fileVerbsPharseCounter(filepath, 10, stopwordpath, phrase, verbs)
+        result = [('abase kit', 100), ('abate boy',100), ('of the',50)]
+        self.assertEqual(count, result)
+
+    def test_verbsphrase_stop(self):
+        filepath = "./test/verbsphrase.txt"
+        stopwordpath = "./stopword.txt"
+        verbs = "./verbs.txt"
+        phrase = 2
+        count = fileVerbsPharseCounter(filepath, 10, stopwordpath, phrase, verbs)
+        result = []
+        self.assertEqual(count, result)
+
+    def test_verbsphrase_nofile(self):
+        filepath = "./wrong.txt"
+        verbs = "./verbs.txt"
+        with self.assertRaises(FileNotFoundError):
+            count = fileVerbsPharseCounter(filepath, 10, None, 2, verbs)
+
 
 if __name__ == "__main__":
     unittest.main()

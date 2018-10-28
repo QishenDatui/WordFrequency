@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{ece9bdf2-a8f5-4a62-927b-3e003c553c19}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>alphabet.py</StartupFile>
+    <StartupFile>unitTest\TestVerbsPhrase.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -38,6 +38,12 @@
     <Compile Include="alphabet.py" />
     <Compile Include="pharse.py" />
     <Compile Include="stopWord.py" />
+    <Compile Include="unitTest\testVerbPreposition.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="unitTest\TestVerbsPhrase.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="unitTest\testPhrase.py">
       <SubType>Code</SubType>
     </Compile>
