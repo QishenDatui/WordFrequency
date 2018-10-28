@@ -1,5 +1,5 @@
 import unittest
-from stopWord import fileWordCounter, alphabet
+from pharse import fileWordCounter, alphabet, filePharseCounter_3words, filePharseCounter_morewords
 
 class TestStopWord(unittest.TestCase):
     
@@ -45,7 +45,37 @@ class TestStopWord(unittest.TestCase):
         result = [('word', 100), ('hello', 70), ('a', 60), ('key', 50)]
         self.assertEqual(count, result)
 
+    def test_pharse_init(self):
+        filepath = "./test/phrase.txt"
+        stopWordpath = None
+        phrase = 2
+        count = filePharseCounter_3words(filepath, 10, stopWordpath, phrase)
+        result = [('hello world', 100), ('hello kit', 30), ('a a', 10), ('a key', 5)]
+        self.assertEqual(count, result)
+
+    def test_pharse_stop(self):
+        filepath = "./test/phrase.txt"
+        stopWordpath = "./stopword.txt"
+        phrase = 2
+        count = filePharseCounter_3words(filepath, 10, stopWordpath, phrase)
+        result = [('hello world', 100), ('a a', 10), ('a key', 5)]
+        self.assertEqual(count, result)
+
+    def test_pharse_more_init(self):
+        filepath = "./test/phrase.txt"
+        stopWordpath = None
+        phrase = 2
+        count = filePharseCounter_morewords(filepath, 10, stopWordpath, phrase)
+        result = [('hello world', 100), ('hello kit', 30), ('a a', 10), ('a key', 5)]
+        self.assertEqual(count, result)
+
+    def test_pharse_more_stop(self):
+        filepath = "./test/phrase.txt"
+        stopWordpath = "./stopword.txt"
+        phrase = 2
+        count = filePharseCounter_morewords(filepath, 10, stopWordpath, phrase)
+        result = [('hello world', 100), ('a a', 10), ('a key', 5)]
+        self.assertEqual(count, result)
+
 if __name__ == "__main__":
     unittest.main()
-
-
