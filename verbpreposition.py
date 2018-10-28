@@ -114,8 +114,8 @@ def comprise_verbs_pharse(line, pharse, verb_dict):
 
 
 def fileVerbsPrepositionCounter(filepath, number, stopwords, preposition, verbs):
-    verb_dict = verbsReference(verbs)
-    preposition_dict = prepositionReference(preposition)
+    verb_dict = verbs
+    preposition_dict = preposition
     f = open(filepath, "r")
     count = collections.Counter("")
     # strmatch = [r"\b\w+" for i in range(pharse)]
@@ -147,10 +147,14 @@ def fileVerbsPrepositionCounter(filepath, number, stopwords, preposition, verbs)
     
     f.close()
 
-    if number == -1:
-        return count.most_common()
-    
-    return count.most_common(number) 
+    if number < 0 :
+        return sorted(count.items(), key=lambda kv: (-kv[1], kv[0]))
+
+    if number >= len(count) / 2 :
+        return sorted(count.items(), key=lambda kv: (-kv[1], kv[0]))[:number]
+
+    temp = count.most_common(number * 2)
+    return sorted(temp, key=lambda kv: (-kv[1], kv[0]))[:number]  
 
 def directoryVerbsPrepositionCounter(directory, number, stopwords, preposition, verbs):
     fileList = glob.glob(directory+'*.txt')
@@ -200,10 +204,14 @@ def filePharseCounter_3words(filepath, number, stopwords, pharse):
     
     f.close()
 
-    if number == -1:
-        return count.most_common()
-    
-    return count.most_common(number) 
+    if number < 0 :
+        return sorted(count.items(), key=lambda kv: (-kv[1], kv[0]))
+
+    if number >= len(count) / 2 :
+        return sorted(count.items(), key=lambda kv: (-kv[1], kv[0]))[:number]
+
+    temp = count.most_common(number * 2)
+    return sorted(temp, key=lambda kv: (-kv[1], kv[0]))[:number] 
 
 
 def directoryPharseCounter_3words(directory, number, stopwords, pharse):
@@ -223,7 +231,7 @@ def allDirectoryPharseCounter_3words(directory, number, stopwords, pharse):
 
 def fileVerbsWordCounter(filepath, number, stopwords, verbs):
     
-    verb_dict = verbsWordReference(verbs)
+    verb_dict = verbs
     f = open(filepath, "r")
     count = collections.Counter("")
     # strmatch = [r"\b\w+" for i in range(pharse)]
@@ -257,13 +265,17 @@ def fileVerbsWordCounter(filepath, number, stopwords, verbs):
     count = count - collections.Counter()
 
 
-    if number == -1:
-        return count.most_common()
-    
-    return count.most_common(number) 
+    if number < 0 :
+        return sorted(count.items(), key=lambda kv: (-kv[1], kv[0]))
+
+    if number >= len(count) / 2 :
+        return sorted(count.items(), key=lambda kv: (-kv[1], kv[0]))[:number]
+
+    temp = count.most_common(number * 2)
+    return sorted(temp, key=lambda kv: (-kv[1], kv[0]))[:number] 
 
 def fileVerbsPharseCounter(filepath, number, stopwords, pharse, verbs):
-    verb_dict = verbsWordReference(verbs)
+    verb_dict = verbs
     f = open(filepath, "r")
     count = collections.Counter("")
     # strmatch = [r"\b\w+" for i in range(pharse)]
@@ -297,10 +309,14 @@ def fileVerbsPharseCounter(filepath, number, stopwords, pharse, verbs):
     
     f.close()
 
-    if number == -1:
-        return count.most_common()
-    
-    return count.most_common(number) 
+    if number < 0 :
+        return sorted(count.items(), key=lambda kv: (-kv[1], kv[0]))
+
+    if number >= len(count) / 2 :
+        return sorted(count.items(), key=lambda kv: (-kv[1], kv[0]))[:number]
+
+    temp = count.most_common(number * 2)
+    return sorted(temp, key=lambda kv: (-kv[1], kv[0]))[:number] 
 
 
 def directoryVerbsPharseCounter(directory, number, stopwords, pharse, verbs):
@@ -376,10 +392,14 @@ def fileWordCounter(filepath, number, stopwords):
             del(count[element])
     f.close()
 
-    if number == -1:
-        return count.most_common()
-    
-    return count.most_common(number) 
+    if number < 0 :
+        return sorted(count.items(), key=lambda kv: (-kv[1], kv[0]))
+
+    if number >= len(count) / 2 :
+        return sorted(count.items(), key=lambda kv: (-kv[1], kv[0]))[:number]
+
+    temp = count.most_common(number * 2)
+    return sorted(temp, key=lambda kv: (-kv[1], kv[0]))[:number] 
 
 
 def directoryWordCounter(directory, number, stopwords):
@@ -433,11 +453,14 @@ def filePharseCounter_morewords(filepath, number, stopwords, pharse):
     
     f.close()
     # pynlpir.close()
+    if number < 0 :
+        return sorted(count.items(), key=lambda kv: (-kv[1], kv[0]))
 
-    if number == -1:
-        return count.most_common()
-    
-    return count.most_common(number)
+    if number >= len(count) / 2 :
+        return sorted(count.items(), key=lambda kv: (-kv[1], kv[0]))[:number]
+
+    temp = count.most_common(number * 2)
+    return sorted(temp, key=lambda kv: (-kv[1], kv[0]))[:number] 
 
 
 def directoryPharseCounter_morewords(directory, number, stopwords, pharse):
@@ -502,33 +525,38 @@ if __name__ == "__main__":
 
 
     if args.directory and args.file and args.verbs and args.pharse:
-        verb_dict = verbsReference(args.verbs)
+        verb_dict = verbsWordReference(args.verbs)
         directoryVerbsParseCounter(args.directory, args.number, args.stopwords, args.pharse, verb_dict)
         exit(0)
     
     if args.directorys and args.file and args.verbs and args.pharse:
-        allDirectoryVerbsParseCounter(args.directorys, args.number, args.stopwords, args.preposition, args.verbs)
+        verb_dict = verbsWordReference(args.verbs)
+        allDirectoryVerbsParseCounter(args.directorys, args.number, args.stopwords, args.pharse, verb_dict)
         exit(0)
-
+    #def fileVerbsPharseCounter(filepath, number, stopwords, pharse, verbs):
     if args.file and args.verbs and args.pharse:
+        verb_dict = verbsWordReference(args.verbs)
         start_time = time()
-        count = fileVerbsParseCounter(args.file, args.number, args.stopwords, args.preposition, args.verbs)
+        count = fileVerbsPharseCounter(args.file, args.number, args.stopwords, args.pharse, verb_dict)
         print(count)
         end_time = time()
         print("total time is ",end_time - start_time)
         exit(0)
 
     if args.directory and args.file and args.verbs and args.word:
-        directoryVerbsWordCounter(args.directory, args.number, args.stopwords, args.verbs)
+        verb_dict = verbsWordReference(args.verbs)
+        directoryVerbsWordCounter(args.directory, args.number, args.stopwords, verb_dict)
         exit(0)
     
     if args.directorys and args.file and args.verbs and args.word:
-        allDirectoryVerbsWordCounter(args.directorys, args.number, args.stopwords, args.verbs)
+        verb_dict = verbsWordReference(args.verbs)
+        allDirectoryVerbsWordCounter(args.directorys, args.number, args.stopwords, verb_dict)
         exit(0)
 
     if args.file and args.verbs and args.word:
+        verb_dict = verbsWordReference(args.verbs)
         start_time = time()
-        count = fileVerbsWordCounter(args.file, args.number, args.stopwords, args.verbs)
+        count = fileVerbsWordCounter(args.file, args.number, args.stopwords, verb_dict)
         print(count)
         end_time = time()
         print("total time is ",end_time - start_time)

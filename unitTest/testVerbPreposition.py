@@ -1,6 +1,41 @@
 import unittest
+import re
 from verbpreposition import fileWordCounter, alphabet, filePharseCounter_3words, filePharseCounter_morewords, fileVerbsWordCounter, fileVerbsPharseCounter, fileVerbsPrepositionCounter
 
+def verbsReference(verbs):
+    f = open(verbs, "r")
+    strmatch = r'\b[a-z]+[a-z0-9]*\b'
+    verbdict = {}
+    for line in f.readlines():
+        line = re.findall(strmatch, line)
+        for i in range(len(line)):
+            verbdict[line[i]] = line[0]
+
+    f.close()
+    return verbdict
+
+def verbsWordReference(verbs):
+    f = open(verbs, "r")
+    strmatch = r'\b[a-z]+[a-z0-9]*\b'
+    verbdict = {}
+    for line in f.readlines():
+        line = re.findall(strmatch, line)
+        for i in range(1,len(line)):
+            verbdict[line[i]] = line[0]
+
+    f.close()
+
+    return verbdict
+
+def prepositionReference(preposition):
+    f = open(preposition, "r")
+    preposition_dict = {}
+    for line in f.readlines():
+        line = line[:-1]
+        preposition_dict[line] = 1
+    f.close()
+
+    return preposition_dict
 class TestVerbsPreposition(unittest.TestCase):
     
     def setUp(self):
@@ -81,6 +116,7 @@ class TestVerbsPreposition(unittest.TestCase):
         filepath = "./test/verbsword.txt"
         stopwordpath = None
         verbs = "./verbs.txt"
+        verbs = verbsWordReference(verbs)
         count = fileVerbsWordCounter(filepath, 10, stopwordpath, verbs)
         result = [('abase', 400), ('abate',400), ('the',50)]
         self.assertEqual(count, result)
@@ -89,6 +125,7 @@ class TestVerbsPreposition(unittest.TestCase):
         filepath = "./test/verbsword.txt"
         stopwordpath = "./stopword.txt"
         verbs = "./verbs.txt"
+        verbs = verbsWordReference(verbs)
         count = fileVerbsWordCounter(filepath, 10, stopwordpath, verbs)
         result = [('abase', 400), ('abate',400)]
         self.assertEqual(count, result)
@@ -97,6 +134,7 @@ class TestVerbsPreposition(unittest.TestCase):
         filepath = "./test/verbsphrase.txt"
         stopwordpath = None
         verbs = "./verbs.txt"
+        verbs = verbsWordReference(verbs)
         phrase = 2
         count = fileVerbsPharseCounter(filepath, 10, stopwordpath, phrase, verbs)
         result = [('abase kit', 100), ('abate boy',100), ('of the',50)]
@@ -106,6 +144,7 @@ class TestVerbsPreposition(unittest.TestCase):
         filepath = "./test/verbsphrase.txt"
         stopwordpath = "./stopword.txt"
         verbs = "./verbs.txt"
+        verbs = verbsWordReference(verbs)
         phrase = 2
         count = fileVerbsPharseCounter(filepath, 10, stopwordpath, phrase, verbs)
         result = []
@@ -114,6 +153,7 @@ class TestVerbsPreposition(unittest.TestCase):
     def test_verbsphrase_nofile(self):
         filepath = "./wrong.txt"
         verbs = "./verbs.txt"
+        verbs = verbsWordReference(verbs)
         with self.assertRaises(FileNotFoundError):
             count = fileVerbsPharseCounter(filepath, 10, None, 2, verbs)
 
@@ -122,6 +162,8 @@ class TestVerbsPreposition(unittest.TestCase):
         stopwordpath = None
         verbs = "./verbs.txt"
         preposition = "./prepositions.txt"
+        verbs = verbsReference(verbs)
+        preposition = prepositionReference(preposition)
         count = fileVerbsPrepositionCounter(filepath, 10, stopwordpath, preposition, verbs)
         result = [('abase above', 100), ('abate on', 25)]
         self.assertEqual(count, result)
@@ -132,6 +174,8 @@ class TestVerbsPreposition(unittest.TestCase):
         stopwordpath = "./stopword.txt"
         verbs = "./verbs.txt"
         preposition = "./prepositions.txt"
+        verbs = verbsReference(verbs)
+        preposition = prepositionReference(preposition)
         count = fileVerbsPrepositionCounter(filepath, 10, stopwordpath, preposition, verbs)
         result = [('abate on', 25)]
         self.assertEqual(count, result)
