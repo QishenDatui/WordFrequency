@@ -446,7 +446,7 @@ if __name__ == "__main__":
     group = parser.add_mutually_exclusive_group()
     group.add_argument("-c", "--character", help="count the number of character", action='count')
     group.add_argument("-f", "--word", help="count the number of word", action='count')
-    group.add_argument("-p", "--pharse", help="the length of phrase to be counted", type=int, nargs=1)
+    group.add_argument("-p", "--pharse", type=int, help="the length of phrase to be counted")
     group.add_argument("-q", "--preposition", help="the filepath of the preposition file")
 
     group_path = parser.add_mutually_exclusive_group()
@@ -481,10 +481,10 @@ if __name__ == "__main__":
     if args.directorys and args.file and args.verbs and args.pharse:
         allDirectoryVerbsParseCounter(args.directorys, args.number, args.stopwords, args.preposition, args.verbs)
         exit(0)
-
+    #def fileVerbsPharseCounter(filepath, number, stopwords, pharse, verbs):
     if args.file and args.verbs and args.pharse:
         start_time = time()
-        count = fileVerbsParseCounter(args.file, args.number, args.stopwords, args.preposition, args.verbs)
+        count = fileVerbsPharseCounter(args.file, args.number, args.stopwords, args.pharse, args.verbs)
         print(count)
         end_time = time()
         print("total time is ",end_time - start_time)
