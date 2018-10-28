@@ -128,7 +128,7 @@ def fileVerbsPrepositionCounter(filepath, number, stopwords, preposition, verbs)
             # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
             line = templine + line
             line = re.findall(strmatch, line.lower())
-            templine = "".join(line[-1:])
+            templine = "".join(line[-1:]) + ' '
             line = comprise_verbs(line, verb_dict, preposition_dict)
             count.update(line)
     else:
@@ -141,7 +141,7 @@ def fileVerbsPrepositionCounter(filepath, number, stopwords, preposition, verbs)
             line = templine + line
             line = re.findall(strmatch, line.lower())
             line = [element for element in line if element not in stop]
-            templine = "".join(line[-1:])
+            templine = "".join(line[-1:]) + ' '
             line = comprise_verbs(line, verb_dict, preposition_dict)
             count.update(line)
     
@@ -180,12 +180,13 @@ def filePharseCounter_3words(filepath, number, stopwords, pharse):
     strmatch = r'\b\w+\b|[^\s\w]'
     strmatch = re.compile(strmatch)
     templine = ""
+    temp_pharse = pharse - 1
     if stopwords == None:
         for line in f.readlines():
             # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
             line = templine + line
             line = re.findall(strmatch, line.lower())
-            templine = " ".join(line[-1 * pharse:])
+            templine = " ".join(line[-1 * temp_pharse:]) + ' '
             line = comprise_3words(line, pharse)
             count.update(line)
     else:
@@ -198,7 +199,7 @@ def filePharseCounter_3words(filepath, number, stopwords, pharse):
             line = templine + line
             line = re.findall(strmatch, line.lower())
             line = [element for element in line if element not in stop]
-            templine = " ".join(line[-1 * pharse:])
+            templine = " ".join(line[-1 * temp_pharse:]) + ' '
             line = comprise_3words(line, pharse)
             count.update(line)
     
@@ -217,7 +218,7 @@ def filePharseCounter_3words(filepath, number, stopwords, pharse):
 def directoryPharseCounter_3words(directory, number, stopwords, pharse):
     fileList = glob.glob(directory+'*.txt')
     for file in fileList:
-        count = fileWordCounter_3words(file, number, stopwords, pharse)
+        count = filePharseCounter_3words(file, number, stopwords, pharse)
         print("the words in %s are" % file)
         print(count)
 
@@ -225,7 +226,7 @@ def allDirectoryPharseCounter_3words(directory, number, stopwords, pharse):
     for maindir, _, fileList in os.walk(directory):
         for filename in fileList:
             if filename[-4:] == ".txt":
-                count = fileWordCounter_3words(maindir + '/' + filename, number, stopwords, pharse)
+                count = filePharseCounter_3words(maindir + '/' + filename, number, stopwords, pharse)
                 print("%s has words:" % filename)
                 print(count)
 
@@ -283,12 +284,13 @@ def fileVerbsPharseCounter(filepath, number, stopwords, pharse, verbs):
     strmatch = r'\b\w+\b|[^\sa-z0-9]'
     strmatch = re.compile(strmatch)
     templine = ""
+    temp_pharse = pharse - 1
     if stopwords == None:
         for line in f.readlines():
             # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
             line = templine + line
             line = re.findall(strmatch, line.lower())
-            templine = " ".join(line[-1 * pharse:])
+            templine = " ".join(line[-1 * temp_pharse:]) + " "
             line = comprise_verbs_pharse(line, pharse, verb_dict)
             count.update(line)
     else:
@@ -301,7 +303,7 @@ def fileVerbsPharseCounter(filepath, number, stopwords, pharse, verbs):
             line = templine + line
             line = re.findall(strmatch, line.lower())
             line = [element for element in line if element not in stop]
-            templine = " ".join(line[-1 * pharse:])
+            templine = " ".join(line[-1 * temp_pharse:]) + " "
             line = comprise_verbs_pharse(line, pharse, verb_dict)
             count.update(line)
         for element in stop:
@@ -330,7 +332,7 @@ def allDirectoryVerbsPharseCounter(directory, number, stopwords, pharse, verbs):
     for maindir, _, fileList in os.walk(directory):
         for filename in fileList:
             if filename[-4:] == ".txt":
-                count = fileVerbsPharseCounter(maindir.join('/'.join(filename)), number, stopwords, pharse, verbs)
+                count = fileVerbsPharseCounter(maindir + '/' + filename, number, stopwords, pharse, verbs)
                 print("%s has words:" % filename)
                 print(count)
 
@@ -427,6 +429,7 @@ def filePharseCounter_morewords(filepath, number, stopwords, pharse):
     strmatch = re.compile(strmatch)
     # pynlpir.open()
     templine = ""
+    temp_pharse = pharse - 1
     if stopwords == None:
         for line in f.readlines():
             # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
@@ -434,7 +437,7 @@ def filePharseCounter_morewords(filepath, number, stopwords, pharse):
             line = re.findall(strmatch, line.lower())
             # line = WordSpilt().tokenize(line.lower())
             # line = pynlpir.segment(line.lower(), pos_tagging=False)
-            templine = " ".join(line[-1 * pharse:])
+            templine = " ".join(line[-1 * temp_pharse:]) + " "
             line = comprise_morewords(line, pharse)
             count.update(line)
     else:
@@ -447,7 +450,7 @@ def filePharseCounter_morewords(filepath, number, stopwords, pharse):
             line = templine + line
             line = re.findall(strmatch, line.lower())
             line = [element for element in line if element not in stop]
-            templine = " ".join(line[-1 * pharse:])
+            templine = " ".join(line[-1 * temp_pharse:]) + " "
             line = comprise_morewords(line, pharse)
             count.update(line)
     
@@ -466,7 +469,7 @@ def filePharseCounter_morewords(filepath, number, stopwords, pharse):
 def directoryPharseCounter_morewords(directory, number, stopwords, pharse):
     fileList = glob.glob(directory+'*.txt')
     for file in fileList:
-        count = fileWordCounter_morewords(file, number, stopwords, pharse)
+        count = filePharseCounter_morewords(file, number, stopwords, pharse)
         print("the words in %s are" % file)
         print(count)
 
@@ -474,7 +477,7 @@ def allDirectoryPharseCounter_morewords(directory, number, stopwords, pharse):
     for maindir, _, fileList in os.walk(directory):
         for filename in fileList:
             if filename[-4:] == ".txt":
-                count = fileWordCounter_morewords(maindir + '/' + filename, number, stopwords, pharse)
+                count = filePharseCounter_morewords(maindir + '/' + filename, number, stopwords, pharse)
                 print("%s has words:" % filename)
                 print(count)
 
