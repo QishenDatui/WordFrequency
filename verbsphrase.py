@@ -283,7 +283,7 @@ if __name__ == "__main__":
     group = parser.add_mutually_exclusive_group()
     group.add_argument("-c", "--character", help="count the number of character", action='count')
     group.add_argument("-f", "--word", help="count the number of word", action='count')
-    group.add_argument("-p", "--pharse", help="the length of phrase to be counted", type=int, nargs=1)
+    group.add_argument("-p", "--pharse", type=int, help="the length of phrase to be counted")
     group_path = parser.add_mutually_exclusive_group()
     group_path.add_argument("-d", "--directory", help="directory of the file", action='count')
     group_path.add_argument("-s", "--directorys", help="directory of the file", action='count')

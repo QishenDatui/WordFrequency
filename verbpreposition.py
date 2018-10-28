@@ -122,10 +122,13 @@ def fileVerbsPrepositionCounter(filepath, number, stopwords, preposition, verbs)
     # strmatch = ''.join(strmatch)
     strmatch = r'\b\w+\b|[^\sa-z0-9]'
     strmatch = re.compile(strmatch)
+    templine = ""
     if stopwords == None:
         for line in f.readlines():
             # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
+            line = templine + line
             line = re.findall(strmatch, line.lower())
+            templine = "".join(line[-1:])
             line = comprise_verbs(line, verb_dict, preposition_dict)
             count.update(line)
     else:
@@ -135,8 +138,10 @@ def fileVerbsPrepositionCounter(filepath, number, stopwords, preposition, verbs)
         stop = collections.Counter(stop)
         for line in f.readlines():
             # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
+            line = templine + line
             line = re.findall(strmatch, line.lower())
             line = [element for element in line if element not in stop]
+            templine = "".join(line[-1:])
             line = comprise_verbs(line, verb_dict, preposition_dict)
             count.update(line)
     
@@ -170,10 +175,13 @@ def filePharseCounter_3words(filepath, number, stopwords, pharse):
     # strmatch = ''.join(strmatch)
     strmatch = r'\b\w+\b|[^\s\w]'
     strmatch = re.compile(strmatch)
+    templine = ""
     if stopwords == None:
         for line in f.readlines():
             # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
+            line = templine + line
             line = re.findall(strmatch, line.lower())
+            templine = " ".join(line[-1 * pharse:])
             line = comprise_3words(line, pharse)
             count.update(line)
     else:
@@ -183,8 +191,10 @@ def filePharseCounter_3words(filepath, number, stopwords, pharse):
         stop = collections.Counter(stop)
         for line in f.readlines():
             # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
+            line = templine + line
             line = re.findall(strmatch, line.lower())
             line = [element for element in line if element not in stop]
+            templine = " ".join(line[-1 * pharse:])
             line = comprise_3words(line, pharse)
             count.update(line)
     
@@ -260,10 +270,13 @@ def fileVerbsPharseCounter(filepath, number, stopwords, pharse, verbs):
     # strmatch = ''.join(strmatch)
     strmatch = r'\b\w+\b|[^\sa-z0-9]'
     strmatch = re.compile(strmatch)
+    templine = ""
     if stopwords == None:
         for line in f.readlines():
             # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
+            line = templine + line
             line = re.findall(strmatch, line.lower())
+            templine = " ".join(line[-1 * pharse:])
             line = comprise_verbs_pharse(line, pharse, verb_dict)
             count.update(line)
     else:
@@ -273,8 +286,10 @@ def fileVerbsPharseCounter(filepath, number, stopwords, pharse, verbs):
         stop = collections.Counter(stop)
         for line in f.readlines():
             # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
+            line = templine + line
             line = re.findall(strmatch, line.lower())
             line = [element for element in line if element not in stop]
+            templine = " ".join(line[-1 * pharse:])
             line = comprise_verbs_pharse(line, pharse, verb_dict)
             count.update(line)
         for element in stop:
@@ -391,12 +406,15 @@ def filePharseCounter_morewords(filepath, number, stopwords, pharse):
     strmatch = r'\b\w+\b|[^\s\w]+'
     strmatch = re.compile(strmatch)
     # pynlpir.open()
+    templine = ""
     if stopwords == None:
         for line in f.readlines():
             # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
+            line = templine + line
             line = re.findall(strmatch, line.lower())
             # line = WordSpilt().tokenize(line.lower())
             # line = pynlpir.segment(line.lower(), pos_tagging=False)
+            templine = " ".join(line[-1 * pharse:])
             line = comprise_morewords(line, pharse)
             count.update(line)
     else:
@@ -406,8 +424,10 @@ def filePharseCounter_morewords(filepath, number, stopwords, pharse):
         stop = collections.Counter(stop)
         for line in f.readlines():
             # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
+            line = templine + line
             line = re.findall(strmatch, line.lower())
             line = [element for element in line if element not in stop]
+            templine = " ".join(line[-1 * pharse:])
             line = comprise_morewords(line, pharse)
             count.update(line)
     
@@ -446,7 +466,7 @@ if __name__ == "__main__":
     group = parser.add_mutually_exclusive_group()
     group.add_argument("-c", "--character", help="count the number of character", action='count')
     group.add_argument("-f", "--word", help="count the number of word", action='count')
-    group.add_argument("-p", "--pharse", help="the length of phrase to be counted", type=int, nargs=1)
+    group.add_argument("-p", "--pharse", type=int, help="the length of phrase to be counted")
     group.add_argument("-q", "--preposition", help="the filepath of the preposition file")
 
     group_path = parser.add_mutually_exclusive_group()
@@ -456,18 +476,25 @@ if __name__ == "__main__":
     parser.add_argument("file", help="the path of the file")
     
     args = parser.parse_args()
+
     
     if args.directory and args.file and args.verbs and args.preposition:
-        directoryVerbsPrepositionCounter(args.directory, args.number, args.stopwords, args.pharse, args.verbs)
+        verb_dict = verbsReference(args.verbs)
+        preposition_dict = prepositionReference(args.preposition)
+        directoryVerbsPrepositionCounter(args.directory, args.number, args.stopwords, preposition_dict, verb_dict)
         exit(0)
     
     if args.directorys and args.file and args.verbs and args.preposition:
-        allDirectoryVerbsPrepositionCounter(args.directorys, args.number, args.stopwords, args.pharse, args.verbs)
+        verb_dict = verbsReference(args.verbs)
+        preposition_dict = prepositionReference(args.preposition)
+        allDirectoryVerbsPrepositionCounter(args.directorys, args.number, args.stopwords, preposition_dict, verb_dict)
         exit(0)
 
     if args.file and args.verbs and args.preposition:
+        verb_dict = verbsReference(args.verbs)
+        preposition_dict = prepositionReference(args.preposition)
         start_time = time()
-        count = fileVerbsPrepositionCounter(args.file, args.number, args.stopwords, args.pharse, args.verbs)
+        count = fileVerbsPrepositionCounter(args.file, args.number, args.stopwords, preposition_dict, verb_dict)
         print(count)
         end_time = time()
         print("total time is ",end_time - start_time)
@@ -475,7 +502,8 @@ if __name__ == "__main__":
 
 
     if args.directory and args.file and args.verbs and args.pharse:
-        directoryVerbsParseCounter(args.directory, args.number, args.stopwords, args.preposition, args.verbs)
+        verb_dict = verbsReference(args.verbs)
+        directoryVerbsParseCounter(args.directory, args.number, args.stopwords, args.pharse, verb_dict)
         exit(0)
     
     if args.directorys and args.file and args.verbs and args.pharse:
