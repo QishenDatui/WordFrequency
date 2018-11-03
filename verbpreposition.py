@@ -5,6 +5,12 @@ import collections
 import re
 from time import time
 
+def print_float(obj):
+    for c, p in obj:
+        print('                                       %s\t%.2f%%' % (c,p*100))
+        #print('                                       %s\t.2f%\%\n' % (c,p))
+
+
 def verbsReference(verbs):
     f = open(verbs, "r")
     strmatch = r'\b[a-z]+[a-z0-9]*\b'
@@ -84,7 +90,6 @@ def comprise_3words(line, pharse):
         flag = True
         temp = ''
         for j in range(pharse):
-            # 这部分判断可以优化
             if line[i + j][0] > 'z' or line[i + j][0] < 'a':
                 flag = False
                 break
@@ -100,7 +105,6 @@ def comprise_verbs_pharse(line, pharse, verb_dict):
         flag = True
         temp = ''
         for j in range(pharse):
-            # 这部分判断可以优化
             if line[i + j][0] > 'z' or line[i  + j][0] < 'a':
                 flag = False
                 break
@@ -125,7 +129,6 @@ def fileVerbsPrepositionCounter(filepath, number, stopwords, preposition, verbs)
     templine = ""
     if stopwords == None:
         for line in f.readlines():
-            # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
             line = templine + line
             line = re.findall(strmatch, line.lower())
             templine = "".join(line[-1:]) + ' '
@@ -137,7 +140,6 @@ def fileVerbsPrepositionCounter(filepath, number, stopwords, preposition, verbs)
         stopfile.close()
         stop = collections.Counter(stop)
         for line in f.readlines():
-            # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
             line = templine + line
             line = re.findall(strmatch, line.lower())
             line = [element for element in line if element not in stop]
@@ -183,7 +185,6 @@ def filePharseCounter_3words(filepath, number, stopwords, pharse):
     temp_pharse = pharse - 1
     if stopwords == None:
         for line in f.readlines():
-            # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
             line = templine + line
             line = re.findall(strmatch, line.lower())
             templine = " ".join(line[-1 * temp_pharse:]) + ' '
@@ -195,7 +196,6 @@ def filePharseCounter_3words(filepath, number, stopwords, pharse):
         stopfile.close()
         stop = collections.Counter(stop)
         for line in f.readlines():
-            # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
             line = templine + line
             line = re.findall(strmatch, line.lower())
             line = [element for element in line if element not in stop]
@@ -241,7 +241,6 @@ def fileVerbsWordCounter(filepath, number, stopwords, verbs):
     strmatch = re.compile(strmatch)
     if stopwords == None:
         for line in f.readlines():
-            # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
             line = re.findall(strmatch, line.lower())
             count.update(line)
     else:
@@ -250,7 +249,6 @@ def fileVerbsWordCounter(filepath, number, stopwords, verbs):
         stopfile.close()
         stop = collections.Counter(stop)
         for line in f.readlines():
-            # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
             line = re.findall(strmatch, line.lower())
             count.update(line)
         for element in stop:
@@ -287,7 +285,6 @@ def fileVerbsPharseCounter(filepath, number, stopwords, pharse, verbs):
     temp_pharse = pharse - 1
     if stopwords == None:
         for line in f.readlines():
-            # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
             line = templine + line
             line = re.findall(strmatch, line.lower())
             templine = " ".join(line[-1 * temp_pharse:]) + " "
@@ -299,7 +296,6 @@ def fileVerbsPharseCounter(filepath, number, stopwords, pharse, verbs):
         stopfile.close()
         stop = collections.Counter(stop)
         for line in f.readlines():
-            # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
             line = templine + line
             line = re.findall(strmatch, line.lower())
             line = [element for element in line if element not in stop]
@@ -351,13 +347,15 @@ def allDirectoryVerbsWordCounter(directory, number, stopwords, verbs):
                 print("%s has words:" % filename)
                 print(count)
 
+#def alphabet(filepath):
+
+
 def alphabet(filepath):
     count = collections.Counter()
    
-    f = open(filepath, "r")
+    f = open(filepath, "r", errors='ignore')
     
     for line in f.readlines():
-        # 匹配所有字母
         line = re.findall(r'[a-z]', line.lower())
         count.update(line)
     
@@ -369,17 +367,16 @@ def alphabet(filepath):
         return dict()
         
     for key in count.keys():
-        count[key] = round(count[key] / sumAlphabet, 2)
+        count[key] = count[key] / sumAlphabet
     
     return count.most_common()
 
 def fileWordCounter(filepath, number, stopwords):
     
-    f = open(filepath, "r")
+    f = open(filepath, "r", encoding='utf-8', errors='ignore')
     count = collections.Counter("")
     if stopwords == None:
         for line in f.readlines():
-            # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
             line = re.findall(r"\b[a-z]+[a-z0-9]*\b", line.lower())
             count.update(line)
     else:
@@ -387,7 +384,6 @@ def fileWordCounter(filepath, number, stopwords):
         stop = (stopfile.readline().lower()).split(' ')
         stopfile.close()
         for line in f.readlines():
-            # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
             line = re.findall(r"\b[a-z]+[a-z0-9]*\b", line.lower())
             count.update(line)
         for element in stop:
@@ -405,7 +401,7 @@ def fileWordCounter(filepath, number, stopwords):
 
 
 def directoryWordCounter(directory, number, stopwords):
-    fileList = glob.glob(directory+'*.txt')
+    fileList = glob.glob(os.path.join(directory,'*.txt'))
     for file in fileList:
         count = fileWordCounter(file, number, stopwords)
         print("the words in %s are" % file)
@@ -432,7 +428,6 @@ def filePharseCounter_morewords(filepath, number, stopwords, pharse):
     temp_pharse = pharse - 1
     if stopwords == None:
         for line in f.readlines():
-            # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
             line = templine + line
             line = re.findall(strmatch, line.lower())
             # line = WordSpilt().tokenize(line.lower())
@@ -446,7 +441,6 @@ def filePharseCounter_morewords(filepath, number, stopwords, pharse):
         stopfile.close()
         stop = collections.Counter(stop)
         for line in f.readlines():
-            # 此处问题为若字符串有 \f ，则会被认为是一个转义字符
             line = templine + line
             line = re.findall(strmatch, line.lower())
             line = [element for element in line if element not in stop]
@@ -526,15 +520,15 @@ if __name__ == "__main__":
         print("total time is ",end_time - start_time)
         exit(0)
 
-
+    '''
     if args.directory and args.file and args.verbs and args.pharse:
         verb_dict = verbsWordReference(args.verbs)
-        directoryVerbsParseCounter(args.directory, args.number, args.stopwords, args.pharse, verb_dict)
+        directoryVerbsPharseCounter(args.directory, args.number, args.stopwords, args.pharse, verb_dict)
         exit(0)
     
     if args.directorys and args.file and args.verbs and args.pharse:
         verb_dict = verbsWordReference(args.verbs)
-        allDirectoryVerbsParseCounter(args.directorys, args.number, args.stopwords, args.pharse, verb_dict)
+        allDirectoryVerbsPharseCounter(args.directorys, args.number, args.stopwords, args.pharse, verb_dict)
         exit(0)
     #def fileVerbsPharseCounter(filepath, number, stopwords, pharse, verbs):
     if args.file and args.verbs and args.pharse:
@@ -546,6 +540,7 @@ if __name__ == "__main__":
         print("total time is ",end_time - start_time)
         exit(0)
 
+    
     if args.directory and args.file and args.verbs and args.word:
         verb_dict = verbsWordReference(args.verbs)
         directoryVerbsWordCounter(args.directory, args.number, args.stopwords, verb_dict)
@@ -565,7 +560,7 @@ if __name__ == "__main__":
         print("total time is ",end_time - start_time)
         exit(0)
 
-
+    
     if args.file and args.word:
         count = fileWordCounter(args.file, args.number, args.stopwords)
         print(count)
@@ -578,13 +573,14 @@ if __name__ == "__main__":
     if args.directorys and args.file and args.word:
         allDirectoryWordCounter(args.file, args.number, args.stopwords)
         exit(0)
-
-
+    '''
+    '''
     if args.file and args.character:
         count = alphabet(args.file)
-        print(count)
+        print('File: '+args.file)
+        print_float(count)
         exit(0)
-
+    '''
     if args.directory and args.file and args.pharse and args.pharse < 4:
         directoryPharseCounter_3words(args.file, args.number, args.stopwords, args.pharse)
         exit(0)
@@ -601,6 +597,7 @@ if __name__ == "__main__":
         print(count)
         exit(0)
 
+    '''
     if args.directory and args.file and args.pharse:
         directoryPharseCounter_morewords(args.file, args.number, args.stopwords, args.pharse)
         exit(0)
@@ -608,7 +605,7 @@ if __name__ == "__main__":
     if args.directorys and args.file and args.pharse:
         allDirectoryPharseCounter_morewords(args.file, args.number, args.stopwords, args.pharse)
         exit(0)
-
+    
     if args.file and args.pharse:
         start_time = time()
         count = filePharseCounter_morewords(args.file, args.number, args.stopwords, args.pharse)
@@ -616,6 +613,7 @@ if __name__ == "__main__":
         print("total time is ",end_time - start_time)
         print(count)
         exit(0)
+    '''
 
 
 
