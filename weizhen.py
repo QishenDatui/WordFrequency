@@ -30,9 +30,10 @@ def s_func(function, directory, *ops):
 def verbsReference(verbs):
     f = open(verbs, "r")
     strmatch = r'\b[a-z]+[a-z0-9]*\b'
+    strmatch = re.compile(strmatch)
     verbdict = {}
     for line in f.readlines():
-        line = re.findall(strmatch, line)
+        line = strmatch.findall(line)
         for i in range(len(line)):
             verbdict[line[i]] = line[0]
     f.close()
@@ -110,14 +111,14 @@ def filephraseCounter_morewords(filepath, number, stopwords, phrase):
     count = collections.Counter("")
     # strmatch = [r"\b\w+" for i in range(phrase)]
     # strmatch = ''.join(strmatch)
-    strmatch = r'\b\w+\b|[^\s\w]+'
+    strmatch = r'\b[0-9a-z]+\b|[^\s0-9a-z]+'
     strmatch = re.compile(strmatch)
     # pynlpir.open()
     templine = []
     temp_phrase = phrase - 1
     if stopwords == None:
         for line in f.readlines():
-            line = re.findall(strmatch, line.lower())
+            line = strmatch.findall(line.lower())
             line = templine + line
             # line = WordSpilt().tokenize(line.lower())
             # line = pynlpir.segment(line.lower(), pos_tagging=False)
@@ -130,7 +131,7 @@ def filephraseCounter_morewords(filepath, number, stopwords, phrase):
         stop = set(stopfile.readline().lower().split(' '))
         stopfile.close()
         for line in f.readlines():
-            line = re.findall(strmatch, line.lower())
+            line = strmatch.findall(line.lower())
             line = [element for element in line if element not in stop]
             line = templine + line
             templine = line[-1 * temp_phrase:]
@@ -151,13 +152,13 @@ def fileVerbsPrepositionCounter(filepath, number, stopwords, preposition, verbs)
     count = collections.Counter("")
     # strmatch = [r"\b\w+" for i in range(pharse)]
     # strmatch = ''.join(strmatch)
-    strmatch = r'\b\w+\b|[^\sa-z0-9]'
+    strmatch = r'\b[0-9a-z]+\b|[^\sa-z0-9]'
     strmatch = re.compile(strmatch)
     templine = ""
     if stopwords == None:
         for line in f.readlines():
             line = templine + line
-            line = re.findall(strmatch, line.lower())
+            line = strmatch.findall(line.lower())
             templine = "".join(line[-1:]) + ' '
             line = comprise_verbs(line, verb_dict, preposition_dict)
             count.update(line)
@@ -168,7 +169,7 @@ def fileVerbsPrepositionCounter(filepath, number, stopwords, preposition, verbs)
         stop = collections.Counter(stop)
         for line in f.readlines():
             line = templine + line
-            line = re.findall(strmatch, line.lower())
+            line = strmatch.findall(line.lower())
             line = [element for element in line if element not in stop]
             templine = "".join(line[-1:]) + ' '
             line = comprise_verbs(line, verb_dict, preposition_dict)
@@ -189,14 +190,14 @@ def fileVerbsWordCounter(filepath, number, stopwords, verbs):
     strmatch = re.compile(strmatch)
     if stopwords == None:
         for line in f.readlines():
-            line = re.findall(strmatch, line.lower())
+            line = strmatch.findall(line.lower())
             count.update(line)
     else:
         stopfile = open(stopwords, "r")
         stop = set(stopfile.readline().lower().split(' '))
         stopfile.close()
         for line in f.readlines():
-            line = re.findall(strmatch, line.lower())
+            line = strmatch.findall(line.lower())
             count.update(line)
         for element in stop:
             del (count[element])
@@ -215,18 +216,19 @@ def fileVerbsWordCounter(filepath, number, stopwords, verbs):
 def fileWordCounter(filepath, number, stopwords):
     f = open(filepath, "r",encoding='utf-8', errors='ignore')
     count = collections.Counter("")
+    strmatch = re.compile(r"\b[a-z]+[a-z0-9]*\b")
     if stopwords == None:
         for line in f.readlines():
             #line = tokenize.word_tokenize(line.lower())
             #line = [i for i in line if line[0]>='a' and line[0]<='z']
-            line = re.findall(r"\b[a-z]+[a-z0-9]*\b", line.lower())
+            line = strmatch.findall(line.lower())
             count.update(line)
     else:
         stopfile = open(stopwords, "r")
         stop = (stopfile.readline().lower()).split(' ')
         stopfile.close()
         for line in f.readlines():
-            line = re.findall(r"\b[a-z]+[a-z0-9]*\b", line.lower())
+            line = strmatch.findall(line.lower())
             count.update(line)
         for element in stop:
             del (count[element])
@@ -244,25 +246,24 @@ def fileVerbsPharseCounter(filepath, number, stopwords, pharse, verbs):
     count = collections.Counter("")
     # strmatch = [r"\b\w+" for i in range(pharse)]
     # strmatch = ''.join(strmatch)
-    strmatch = r'\b\w+\b|[^\sa-z0-9]'
+    strmatch = r'\b[0-9a-z]+\b|[^\sa-z0-9]'
     strmatch = re.compile(strmatch)
-    templine = ""
+    templine = []
     temp_pharse = pharse - 1
     if stopwords == None:
         for line in f.readlines():
+            line = strmatch.findall(line.lower())
             line = templine + line
-            line = re.findall(strmatch, line.lower())
-            templine = " ".join(line[-1 * temp_pharse:]) + " "
+            templine = line[-1 * temp_pharse:]
             line = comprise_verbs_pharse(line, pharse, verb_dict)
             count.update(line)
     else:
         stopfile = open(stopwords, "r")
-        stop = stopfile.readline().lower().split(' ')
+        stop = set(stopfile.readline().lower().split(' '))
         stopfile.close()
-        stop = collections.Counter(stop)
         for line in f.readlines():
+            line = strmatch.findall(line.lower())
             line = templine + line
-            line = re.findall(strmatch, line.lower())
             line = [element for element in line if element not in stop]
             templine = " ".join(line[-1 * temp_pharse:]) + " "
             line = comprise_verbs_pharse(line, pharse, verb_dict)
