@@ -1,9 +1,1 @@
-# WordFrequency
-
-[代码规范网址](https://blog.csdn.net/warm77/article/details/78353632)
-
-可能用到的参考网址：
-
-[https://ask.helplib.com/c++/post_807090](https://ask.helplib.com/c++/post_807090)
-[https://blog.csdn.net/heykid/article/details/62424513](https://blog.csdn.net/heykid/article/details/62424513)
-[https://stackoverflow.com/questions/236129/how-do-i-iterate-over-the-words-of-a-string](https://stackoverflow.com/questions/236129/how-do-i-iterate-over-the-words-of-a-string)
+﻿﻿# WordFrequency## 代码库描述：  详细要求位于[这里](https://www.cnblogs.com/xinz/archive/2011/11/27/2265000.html)。  简要概括：根据输入的命令行参数，对文本中的字符进行对应的统计，例如使用-c命令统计字符出现次数，利用-f统计单词出现次数等等。项目一共分为5个步骤，4个必做项和一个附加项。分别为统计字母比例，单词数，短语数，动词形态还原、停用词剔除、动词介词词组统计。  在本次项目中，我们依次完成了这样的5个步骤，并且在[代码仓库](https://github.com/QishenDatui/WordFrequency)中打好了tag，可以git checkout到相应的step，包含py文件、unittest文件夹中的测试文件和test文件夹中的测试数据。注意，每个step包含前面step的所有命令行参数功能，step0-4没有进行优化，step5（默认tag标签）中支持所有功能且经过了速度优化。  test文件夹：测试文本  unitTest文件夹：测试脚本  *.txt：可以用于直接跑的所需要的停用词表、动词表、介词表以及测试文本  TA.exe：助教所给出的参考程序  main.py：包含所有功能的代码文件。  **请注意：请使用step5中（默认的当前git状态）的main.py，包含所需要的功能和优化。其他tag中包含所需step的功能，但没有优化。动词表和介词表的格式均为助教所提供的文件格式；停用词表助教未提供，所需要使用的格式为：所有的停用词使用空格分隔，不要换行**## 第一次讨论中确定的代码规范：[代码规范网址](https://blog.csdn.net/warm77/article/details/78353632)## 可能用到的参考网址：[https://ask.helplib.com/c++/post_807090](https://ask.helplib.com/c++/post_807090)[https://blog.csdn.net/heykid/article/details/62424513](https://blog.csdn.net/heykid/article/details/62424513)[https://stackoverflow.com/questions/236129/how-do-i-iterate-over-the-words-of-a-string](https://stackoverflow.com/questions/236129/how-do-i-iterate-over-the-words-of-a-string)
