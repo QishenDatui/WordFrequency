@@ -135,22 +135,22 @@ def fileVerbsWordCounter(filepath, number, stopwords, verbs):
     count = collections.Counter("")
     strmatch = re.compile(r'(?<![a-z0-9])[a-z][a-z0-9]*')
     if stopwords == None:
-        for line in f.readlines():
-            line = strmatch.findall(line.lower())
-            #line = [verb_dict.get(element, element) for element in line]
-            count.update(line)
+        line = f.read()
+        line = strmatch.findall(line.lower())
+        # line = [verb_dict.get(element, element) for element in line]
+        count.update(line)
     else:
         stopfile = open(stopwords, "r")
         stop = set(stopfile.readline().lower().split(' '))
         stopfile.close()
-        for line in f.readlines():
-            line = strmatch.findall(line.lower())
-            #line = [verb_dict.get(element, element) for element in line]
-            count.update(line)
+        line = f.read()
+        line = strmatch.findall(line.lower())
+        # line = [verb_dict.get(element, element) for element in line]
+        count.update(line)
         for element in stop:
             del (count[element])
     f.close()
-    for element in verb_dict.keys():
+    for element in verb_dict:
         count[verb_dict[element]] += count[element]
         del (count[element])
     count = count - collections.Counter()
@@ -166,16 +166,18 @@ def fileWordCounter(filepath, number, stopwords):
     count = collections.Counter("")
     strmatch = re.compile(r'(?<![a-z0-9])[a-z][a-z0-9]*')
     if stopwords == None:
-        for line in f.readlines():
-            line = strmatch.findall(line.lower())
-            count.update(line)
+        line = f.read()
+        line = strmatch.findall(line.lower())
+        # line = [verb_dict.get(element, element) for element in line]
+        count.update(line)
     else:
         stopfile = open(stopwords, "r")
         stop = (stopfile.readline().lower()).split(' ')
         stopfile.close()
-        for line in f.readlines():
-            line = strmatch.findall(line.lower())
-            count.update(line)
+        line = f.read()
+        line = strmatch.findall(line.lower())
+        # line = [verb_dict.get(element, element) for element in line]
+        count.update(line)
         for element in stop:
             del (count[element])
     f.close()
